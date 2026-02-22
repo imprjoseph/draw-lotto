@@ -2,21 +2,66 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>IMPR 新動力 - 2026 開工抽獎</title>
+    <title>IMPR 新動力 - 2026 開工大吉</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --impr-orange: #f37021; --gold: #ffd700; --bg: #1a1a1a; }
-        body { background: var(--bg); color: white; font-family: "Microsoft JhengHei", sans-serif; text-align: center; padding: 20px; }
-        .container { max-width: 850px; margin: auto; border: 3px solid var(--impr-orange); border-radius: 20px; padding: 40px; background: rgba(255,255,255,0.05); box-shadow: 0 0 30px rgba(243, 112, 33, 0.2); }
-        /* 修正 Logo 顯示 */
-        .logo { width: 400px; max-width: 90%; margin-bottom: 20px; }
-        #prize-info { font-size: 1.6em; color: var(--gold); margin-bottom: 10px; font-weight: bold; }
-        #display-name { font-size: 6em; font-weight: bold; margin: 30px 0; color: #fff; text-shadow: 0 0 20px var(--impr-orange); height: 150px; line-height: 150px; }
-        button { background: var(--impr-orange); color: white; border: none; padding: 18px 60px; font-size: 1.8em; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        button:hover { transform: scale(1.05); background: #ff853d; box-shadow: 0 0 15px var(--impr-orange); }
-        button:disabled { background: #444; color: #888; cursor: not-allowed; }
-        .history { margin-top: 40px; text-align: left; background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; border-left: 5px solid var(--impr-orange); }
-        .highlight { color: var(--gold); font-weight: bold; margin-right: 10px; }
-        li { font-size: 1.2em; margin: 8px 0; list-style: none; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        :root { --impr-orange: #f37021; --gold: #ffd700; }
+        body { 
+            /* 改為暖橘紅色漸層底色 */
+            background: linear-gradient(135deg, #ff9a44 0%, #fc6076 100%); 
+            color: white; 
+            font-family: "Microsoft JhengHei", sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 850px; 
+            margin: 20px auto; 
+            border: 5px solid white; 
+            border-radius: 30px; 
+            padding: 40px; 
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        .logo { width: 350px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2)); margin-bottom: 20px; }
+        #prize-info { font-size: 1.8em; color: var(--gold); margin-bottom: 10px; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+        #display-name { 
+            font-size: 6.5em; 
+            font-weight: bold; 
+            margin: 30px 0; 
+            color: #fff; 
+            text-shadow: 0 0 30px rgba(0,0,0,0.5); 
+            height: 160px; 
+            line-height: 160px; 
+        }
+        button { 
+            background: white; 
+            color: #fc6076; 
+            border: none; 
+            padding: 20px 80px; 
+            font-size: 2em; 
+            border-radius: 60px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-weight: bold;
+            box-shadow: 0 8px 0 #eee;
+        }
+        button:hover { transform: scale(1.05); background: var(--gold); color: #d32f2f; }
+        button:active { transform: translateY(4px); box-shadow: none; }
+        button:disabled { background: #ccc; color: #888; box-shadow: none; cursor: not-allowed; }
+        
+        .history { 
+            margin-top: 40px; 
+            text-align: left; 
+            background: rgba(255,255,255,0.2); 
+            padding: 25px; 
+            border-radius: 20px; 
+        }
+        .highlight { color: var(--gold); font-weight: bold; font-size: 1.2em; }
+        li { font-size: 1.3em; margin: 10px 0; list-style: none; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -24,31 +69,53 @@
     <div class="container">
         <img src="https://raw.githubusercontent.com/imprjoseph/draw-lotto/main/IMPR%20LOGO.png" alt="IMPR Logo" class="logo">
         
-        <div id="prize-info">當前階段：開工獎 $500</div>
-        <div id="display-name">準備開獎</div>
+        <div id="prize-info">當前抽選：開工獎 $500</div>
+        <div id="display-name">🧧 開工大吉 🧧</div>
         
-        <button id="draw-btn" onclick="runLotto()">開始抽出</button>
+        <button id="draw-btn" onclick="runLotto()">抽出幸運兒</button>
 
         <div class="history">
-            <strong>🧧 中獎英雄榜 (由新到舊)：</strong>
+            <strong>✨ 中獎榮耀榜：</strong>
             <ul id="history-list"></ul>
         </div>
     </div>
 
     <script>
-        // 11位成員名單
         let staff = ["Penny", "Arlena", "Steven", "Hazel", "Charlotte", "R.K", "Jade", "Navy", "Eden", "Yuki", "Joseph"];
-
-        // 獎項配置 (總額 6600)
         const prizePool = [
-            { name: "開工獎 $500", count: 5 },
-            { name: "三獎 $600", count: 3 },
-            { name: "二獎 $800", count: 2 },
-            { name: "頭獎 $1,100", count: 1 }
+            { name: "開工獎 $500", count: 5, level: 1 },
+            { name: "三獎 $600", count: 3, level: 1 },
+            { name: "二獎 $800", count: 2, level: 2 },
+            { name: "頭獎 $1,100", count: 1, level: 3 }
         ];
 
         let currentTier = 0;
         let drawnInTier = 0;
+
+        function triggerConfetti(level) {
+            if (level === 1) {
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            } else if (level === 2) {
+                let end = Date.now() + 2000;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            } else if (level === 3) {
+                let duration = 5 * 1000;
+                let animationEnd = Date.now() + duration;
+                let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+                function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+                let interval = setInterval(function() {
+                    let timeLeft = animationEnd - Date.now();
+                    if (timeLeft <= 0) return clearInterval(interval);
+                    let particleCount = 50 * (timeLeft / duration);
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                }, 250);
+            }
+        }
 
         function runLotto() {
             if (staff.length === 0) return;
@@ -64,17 +131,19 @@
                 clearInterval(timer);
                 const winnerIndex = Math.floor(Math.random() * staff.length);
                 const winner = staff.splice(winnerIndex, 1)[0];
-                const prizeName = prizePool[currentTier].name;
+                const prize = prizePool[currentTier];
 
                 display.innerText = winner;
+                
+                // 觸發對應等級特效
+                triggerConfetti(prize.level);
 
-                // 更新中獎紀錄
                 const li = document.createElement('li');
-                li.innerHTML = `<span class="highlight">${prizeName}</span> — ${winner}`;
+                li.innerHTML = `<span class="highlight">${prize.name}</span> — ${winner}`;
                 document.getElementById('history-list').prepend(li);
 
                 drawnInTier++;
-                if (drawnInTier >= prizePool[currentTier].count) {
+                if (drawnInTier >= prize.count) {
                     currentTier++;
                     drawnInTier = 0;
                 }
@@ -83,8 +152,8 @@
                     document.getElementById('prize-info').innerText = `下一階段：${prizePool[currentTier].name}`;
                     btn.disabled = false;
                 } else {
-                    document.getElementById('prize-info').innerText = "🎉 祝 IMPR 新動力開工大吉！";
-                    btn.innerText = "抽獎完畢";
+                    document.getElementById('prize-info').innerText = "🎉 祝 IMPR 全體同仁開工大吉！";
+                    btn.innerText = "圓滿結束";
                 }
             }, 2000);
         }
