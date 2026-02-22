@@ -7,13 +7,13 @@
     <style>
         :root { 
             --impr-orange: #f37021; 
-            --gold: #d4af37; 
-            --lucky-red: #b31217;
+            --gold: #ffcc00; 
+            --lucky-red: #d32f2f;
             --paper-white: #fffcf5;
         }
         
         body { 
-            background: radial-gradient(circle, #d32f2f 0%, #8b0000 100%); 
+            background: radial-gradient(circle, #ff4444 0%, #8b0000 100%); 
             color: #333; 
             font-family: "Microsoft JhengHei", sans-serif; 
             display: flex;
@@ -26,78 +26,104 @@
 
         .container { 
             position: relative;
-            max-width: 900px; 
+            max-width: 1000px; 
             width: 95%;
             background: var(--paper-white); 
-            border: 8px solid var(--gold);
-            border-radius: 40px; 
-            padding: 40px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 10px solid var(--gold);
+            border-radius: 50px; 
+            padding: 50px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
             text-align: center;
             z-index: 10;
         }
 
-        .logo { width: 300px; margin-bottom: 10px; }
+        /* 金色大馬裝飾 */
+        .horse-deco {
+            position: absolute;
+            font-size: 8rem; /* 加大尺寸 */
+            top: 30%;
+            color: var(--gold);
+            filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.5));
+            opacity: 0.9;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .horse-left { left: -40px; transform: scaleX(-1) rotate(-10deg); }
+        .horse-right { right: -40px; transform: rotate(-10deg); }
+
+        .logo { width: 350px; margin-bottom: 20px; }
         
-        #prize-info { font-size: 1.5em; color: var(--lucky-red); font-weight: bold; margin-bottom: 5px; }
-        #instruction { font-size: 1.2em; color: #666; margin-bottom: 10px; height: 1.5em; }
+        #prize-info { font-size: 2em; color: var(--lucky-red); font-weight: bold; margin-bottom: 10px; }
+        #instruction { font-size: 1.5em; color: #b08d57; margin-bottom: 15px; font-weight: bold; height: 1.5em; }
 
         #display-name { 
-            font-size: 5.5em; 
+            font-size: 7.5em; 
             font-weight: bold; 
-            margin: 20px 0; 
+            margin: 30px 0; 
             color: var(--impr-orange); 
-            text-shadow: 2px 2px 0px var(--gold);
-            min-height: 120px;
+            text-shadow: 3px 3px 0px var(--gold), 5px 5px 20px rgba(0,0,0,0.2);
+            min-height: 180px;
         }
 
-        /* 錢袋區域 */
+        /* 大紅錢袋區域 */
         .bag-container {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-            perspective: 1000px;
+            gap: 25px;
+            margin: 30px 0;
         }
 
         .money-bag {
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             display: none; /* 初始隱藏 */
         }
 
-        .money-bag:hover { transform: scale(1.1) rotate(5deg); }
-        .money-bag.selected { transform: scale(1.2); filter: brightness(1.2); }
+        .money-bag:hover { transform: scale(1.2) translateY(-10px); }
 
-        .bag-icon { font-size: 4rem; display: block; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2)); }
+        .bag-icon { 
+            font-size: 7rem; /* 加大錢袋 */
+            display: block; 
+            filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.3));
+        }
+        
         .bag-num { 
             position: absolute; 
-            top: 55%; left: 50%; 
+            top: 60%; left: 50%; 
             transform: translate(-50%, -50%); 
-            color: white; font-weight: bold; font-size: 1.2rem;
-            text-shadow: 1px 1px 2px black;
+            color: var(--gold); 
+            font-weight: bold; 
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            width: 50px; height: 50px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.2);
         }
 
         button { 
-            background: var(--impr-orange); 
+            background: linear-gradient(to bottom, #f37021, #d35400);
             color: white; border: none; 
-            padding: 15px 60px; font-size: 1.8em; 
-            border-radius: 50px; cursor: pointer; 
-            font-weight: bold; box-shadow: 0 8px 0 #c4561a;
+            padding: 25px 100px; font-size: 2.5em; 
+            border-radius: 80px; cursor: pointer; 
+            font-weight: bold; 
+            box-shadow: 0 10px 0 #933c05;
+            transition: 0.2s;
         }
-        button:active { transform: translateY(4px); box-shadow: none; }
+        button:hover { filter: brightness(1.1); }
+        button:active { transform: translateY(6px); box-shadow: 0 4px 0 #933c05; }
         button:disabled { background: #ccc; color: #888; box-shadow: none; cursor: not-allowed; }
         
         .history { 
-            margin-top: 30px; text-align: left; 
-            background: rgba(0,0,0,0.05); padding: 20px; 
-            border-radius: 20px; border: 1px dashed var(--gold);
-            max-height: 150px; overflow-y: auto;
+            margin-top: 40px; text-align: left; 
+            background: rgba(212, 175, 55, 0.1); padding: 25px; 
+            border-radius: 25px; border: 2px solid var(--gold);
+            max-height: 200px; overflow-y: auto;
         }
-        .horse-deco { position: absolute; font-size: 3rem; top: 40%; opacity: 0.2; pointer-events: none; }
-        .horse-left { left: 20px; transform: scaleX(-1); }
-        .horse-right { right: 20px; }
+        .history strong { color: var(--lucky-red); font-size: 1.5em; display: block; margin-bottom: 10px; }
+        li { font-size: 1.5em; margin: 10px 0; color: #333; border-bottom: 1px dashed var(--gold); padding-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -108,22 +134,22 @@
 
         <img src="https://raw.githubusercontent.com/imprjoseph/draw-lotto/main/IMPR%20LOGO.png" alt="IMPR Logo" class="logo">
         
-        <div id="prize-info">2026 馬到成功 抽紅包</div>
-        <div id="instruction">點擊下方按鈕選出幸運兒</div>
+        <div id="prize-info">🧧 2026 馬到成功 賀開工 🧧</div>
+        <div id="instruction">請點擊按鈕選出下一位幸運兒</div>
         <div id="display-name">🧧</div>
 
         <div class="bag-container" id="bag-container">
-            <div class="money-bag" onclick="selectBag(1)"><span class="bag-icon">💰</span><span class="bag-num">1</span></div>
-            <div class="money-bag" onclick="selectBag(2)"><span class="bag-icon">💰</span><span class="bag-num">2</span></div>
-            <div class="money-bag" onclick="selectBag(3)"><span class="bag-icon">💰</span><span class="bag-num">3</span></div>
-            <div class="money-bag" onclick="selectBag(4)"><span class="bag-icon">💰</span><span class="bag-num">4</span></div>
-            <div class="money-bag" onclick="selectBag(5)"><span class="bag-icon">💰</span><span class="bag-num">5</span></div>
+            <div class="money-bag" onclick="selectBag(1)"><span class="bag-icon">🧧</span><span class="bag-num">1</span></div>
+            <div class="money-bag" onclick="selectBag(2)"><span class="bag-icon">🧧</span><span class="bag-num">2</span></div>
+            <div class="money-bag" onclick="selectBag(3)"><span class="bag-icon">🧧</span><span class="bag-num">3</span></div>
+            <div class="money-bag" onclick="selectBag(4)"><span class="bag-icon">🧧</span><span class="bag-num">4</span></div>
+            <div class="money-bag" onclick="selectBag(5)"><span class="bag-icon">🧧</span><span class="bag-num">5</span></div>
         </div>
         
         <button id="main-btn" onclick="drawWorker()">抽出幸運兒</button>
 
         <div class="history">
-            <strong>✨ 中獎榮耀榜：</strong>
+            <strong>🏆 中獎榮耀榜：</strong>
             <ul id="history-list" style="list-style:none; padding:0;"></ul>
         </div>
     </div>
@@ -134,7 +160,7 @@
             { name: "開工獎 $500", count: 5, level: 1 },
             { name: "三獎 $600", count: 3, level: 1 },
             { name: "二獎 $800", count: 2, level: 2 },
-            { name: "頭獎 $1,100", count: 1, level: 3 }
+            { name: "頭獎 $1,000", count: 1, level: 3 }
         ];
 
         let currentTier = 0;
@@ -149,9 +175,8 @@
             const bags = document.querySelectorAll('.money-bag');
             
             btn.disabled = true;
-            document.getElementById('instruction').innerText = "命運輪盤轉動中...";
+            document.getElementById('instruction').innerText = "幸運輪盤旋轉中...";
 
-            // 隨機跳動名字
             let timer = setInterval(() => {
                 display.innerText = staff[Math.floor(Math.random() * staff.length)];
             }, 60);
@@ -162,10 +187,10 @@
                 currentWinner = staff.splice(winnerIndex, 1)[0];
                 display.innerText = currentWinner;
                 
-                // 顯示錢袋供選擇
-                document.getElementById('instruction').innerText = `請 ${currentWinner} 同學選一個錢袋開獎！`;
+                document.getElementById('instruction').innerText = `🎉 恭喜 ${currentWinner}！請選一個大紅包開獎！`;
                 bags.forEach(bag => bag.style.display = 'block');
                 isWaitingForBag = true;
+                btn.style.display = 'none'; // 隱藏按鈕讓大家專注選袋子
             }, 1500);
         }
 
@@ -176,15 +201,17 @@
             const prize = prizePool[currentTier];
             const bags = document.querySelectorAll('.money-bag');
             const display = document.getElementById('display-name');
+            const btn = document.getElementById('main-btn');
             
-            // 隱藏錢袋，顯示中獎金額
             bags.forEach(bag => bag.style.display = 'none');
-            display.innerHTML = `<span style="font-size:0.5em; color:#333;">恭喜抽中</span><br>${prize.name}`;
+            btn.style.display = 'inline-block';
+            
+            display.innerHTML = `<span style="font-size:0.4em; color:var(--lucky-red); text-shadow:none;">恭喜抽中獎項</span><br>${prize.name}`;
             
             triggerConfetti(prize.level);
 
             const li = document.createElement('li');
-            li.innerHTML = `<span style="color:#b31217; font-weight:bold;">${prize.name}</span> — ${currentWinner} (選擇了 ${num} 號袋)`;
+            li.innerHTML = `<span style="color:var(--lucky-red); font-weight:bold;">${prize.name}</span> — ${currentWinner} (選中第 ${num} 號紅包)`;
             document.getElementById('history-list').prepend(li);
 
             drawnInTier++;
@@ -194,26 +221,31 @@
             }
 
             if (currentTier < prizePool.length) {
-                document.getElementById('main-btn').disabled = false;
-                document.getElementById('instruction').innerText = "準備抽出下一位...";
+                btn.disabled = false;
+                document.getElementById('instruction').innerText = "請點擊按鈕繼續抽獎";
             } else {
-                document.getElementById('instruction').innerText = "🎊 2026 馬到成功，開工大吉！";
-                document.getElementById('main-btn').innerText = "圓滿結束";
+                document.getElementById('instruction').innerText = "🎊 全數獎項已開出，祝 IMPR 大家庭馬到成功！";
+                btn.innerText = "開工大吉";
+                btn.disabled = true;
             }
         }
 
         function triggerConfetti(level) {
-            const colors = ['#f37021', '#ffd700', '#ff0000'];
+            const colors = ['#ffcc00', '#f37021', '#ff0000', '#ffffff'];
             if (level === 1) {
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors });
             } else if (level === 2) {
-                confetti({ particleCount: 300, spread: 100, origin: { y: 0.6 }, colors });
+                let end = Date.now() + 2000;
+                (function frame() {
+                    confetti({ particleCount: 10, angle: 60, spread: 55, origin: { x: 0 }, colors });
+                    confetti({ particleCount: 10, angle: 120, spread: 55, origin: { x: 1 }, colors });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
             } else if (level === 3) {
                 let duration = 6 * 1000;
                 let end = Date.now() + duration;
                 (function frame() {
-                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors });
-                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors });
+                    confetti({ particleCount: 15, origin: { x: Math.random(), y: Math.random() - 0.2 }, colors });
                     if (Date.now() < end) requestAnimationFrame(frame);
                 }());
             }
