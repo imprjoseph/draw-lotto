@@ -2,36 +2,36 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>IMPR 新動力 - 2026 開工大吉</title>
+    <title>IMPR 新動力 - 2026 開工抽獎</title>
     <style>
-        :root { --impr-orange: #f37021; --gold: #ffd700; --bg: #2c3e50; }
+        :root { --impr-orange: #f37021; --gold: #ffd700; --bg: #1a1a1a; }
         body { background: var(--bg); color: white; font-family: "Microsoft JhengHei", sans-serif; text-align: center; padding: 20px; }
-        .container { max-width: 850px; margin: auto; border: 4px solid var(--impr-orange); border-radius: 25px; padding: 40px; background: rgba(0,0,0,0.5); box-shadow: 0 0 40px rgba(243, 112, 33, 0.4); }
-        .logo { width: 320px; margin-bottom: 25px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
-        #prize-info { font-size: 1.6em; color: var(--gold); margin-bottom: 15px; font-weight: bold; }
-        #display-name { font-size: 6.5em; font-weight: bold; margin: 45px 0; text-shadow: 0 0 25px var(--impr-orange); height: 180px; line-height: 180px; color: #fff; }
-        button { background: var(--impr-orange); color: white; border: none; padding: 20px 70px; font-size: 2em; border-radius: 60px; cursor: pointer; transition: 0.4s; box-shadow: 0 6px 0 #c4561a; font-weight: bold; }
-        button:hover { transform: scale(1.08); background: #ff7e33; }
-        button:active { transform: translateY(4px); box-shadow: none; }
-        button:disabled { background: #7f8c8d; box-shadow: none; }
-        .history { margin-top: 45px; text-align: left; background: rgba(255,255,255,0.15); padding: 25px; border-radius: 15px; max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,215,0,0.3); }
-        .highlight { color: var(--gold); font-weight: bold; margin-right: 15px; }
+        .container { max-width: 850px; margin: auto; border: 3px solid var(--impr-orange); border-radius: 20px; padding: 40px; background: rgba(255,255,255,0.05); box-shadow: 0 0 30px rgba(243, 112, 33, 0.2); }
+        /* 修正 Logo 顯示 */
+        .logo { width: 400px; max-width: 90%; margin-bottom: 20px; }
+        #prize-info { font-size: 1.6em; color: var(--gold); margin-bottom: 10px; font-weight: bold; }
+        #display-name { font-size: 6em; font-weight: bold; margin: 30px 0; color: #fff; text-shadow: 0 0 20px var(--impr-orange); height: 150px; line-height: 150px; }
+        button { background: var(--impr-orange); color: white; border: none; padding: 18px 60px; font-size: 1.8em; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        button:hover { transform: scale(1.05); background: #ff853d; box-shadow: 0 0 15px var(--impr-orange); }
+        button:disabled { background: #444; color: #888; cursor: not-allowed; }
+        .history { margin-top: 40px; text-align: left; background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; border-left: 5px solid var(--impr-orange); }
+        .highlight { color: var(--gold); font-weight: bold; margin-right: 10px; }
+        li { font-size: 1.2em; margin: 8px 0; list-style: none; border-bottom: 1px solid #333; padding-bottom: 5px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <img src="IMPR%20LOGO.png" alt="IMPR Logo" class="logo">
-        <h1>🧧 2026 IMPR 開工紅包抽抽樂 🧧</h1>
+        <img src="https://raw.githubusercontent.com/imprjoseph/draw-lotto/main/IMPR%20LOGO.png" alt="IMPR Logo" class="logo">
         
-        <div id="prize-info">準備開始：開工獎 $500</div>
-        <div id="display-name">🧧 恭喜發財 🧧</div>
+        <div id="prize-info">當前階段：開工獎 $500</div>
+        <div id="display-name">準備開獎</div>
         
-        <button id="draw-btn" onclick="runLotto()">抽出幸運兒</button>
+        <button id="draw-btn" onclick="runLotto()">開始抽出</button>
 
         <div class="history">
-            <strong>🧧 榮耀中獎名單：</strong>
-            <ul id="history-list" style="padding-left: 20px;"></ul>
+            <strong>🧧 中獎英雄榜 (由新到舊)：</strong>
+            <ul id="history-list"></ul>
         </div>
     </div>
 
@@ -39,7 +39,7 @@
         // 11位成員名單
         let staff = ["Penny", "Arlena", "Steven", "Hazel", "Charlotte", "R.K", "Jade", "Navy", "Eden", "Yuki", "Joseph"];
 
-        // 獎項配置 (由小抽到大)
+        // 獎項配置 (總額 6600)
         const prizePool = [
             { name: "開工獎 $500", count: 5 },
             { name: "三獎 $600", count: 3 },
@@ -56,12 +56,10 @@
             const display = document.getElementById('display-name');
             btn.disabled = true;
 
-            // 隨機滾動效果
             let timer = setInterval(() => {
                 display.innerText = staff[Math.floor(Math.random() * staff.length)];
             }, 60);
 
-            // 2秒後停止並顯示結果
             setTimeout(() => {
                 clearInterval(timer);
                 const winnerIndex = Math.floor(Math.random() * staff.length);
@@ -69,8 +67,8 @@
                 const prizeName = prizePool[currentTier].name;
 
                 display.innerText = winner;
-                display.style.color = "#ffd700";
 
+                // 更新中獎紀錄
                 const li = document.createElement('li');
                 li.innerHTML = `<span class="highlight">${prizeName}</span> — ${winner}`;
                 document.getElementById('history-list').prepend(li);
@@ -85,8 +83,8 @@
                     document.getElementById('prize-info').innerText = `下一階段：${prizePool[currentTier].name}`;
                     btn.disabled = false;
                 } else {
-                    document.getElementById('prize-info').innerText = "🎊 全數抽完，祝大家開工大吉！";
-                    btn.innerText = "抽獎結束";
+                    document.getElementById('prize-info').innerText = "🎉 祝 IMPR 新動力開工大吉！";
+                    btn.innerText = "抽獎完畢";
                 }
             }, 2000);
         }
