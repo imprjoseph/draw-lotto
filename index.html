@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>IMPR 新動力 - 2026 馬到成功開工抽獎</title>
+    <title>IMPR 新動力 - 2026 馬到成功金錢袋抽獎</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { 
@@ -21,89 +21,83 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
+            overflow: hidden;
         }
-
-        /* 裝飾用的紅包與馬 (模擬圖中視覺) */
-        body::before, body::after {
-            content: "🧧";
-            position: absolute;
-            font-size: 5rem;
-            top: 20px;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
-        }
-        body::before { left: 5%; transform: rotate(-15deg); }
-        body::after { right: 5%; transform: rotate(15deg); }
 
         .container { 
             position: relative;
             max-width: 900px; 
-            width: 90%;
+            width: 95%;
             background: var(--paper-white); 
             border: 8px solid var(--gold);
             border-radius: 40px; 
-            padding: 50px; 
+            padding: 40px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             text-align: center;
+            z-index: 10;
         }
 
-        /* 左右兩側的金馬裝飾 */
-        .horse-deco {
-            position: absolute;
-            font-size: 4rem;
-            top: 40%;
-            color: var(--lucky-red);
-            opacity: 0.8;
-        }
-        .horse-left { left: 20px; transform: scaleX(-1); }
-        .horse-right { right: 20px; }
-
-        .logo { width: 380px; margin-bottom: 20px; }
+        .logo { width: 300px; margin-bottom: 10px; }
         
-        #prize-info { 
-            font-size: 1.8em; 
-            color: var(--lucky-red); 
-            margin-bottom: 10px; 
-            font-weight: bold;
-        }
+        #prize-info { font-size: 1.5em; color: var(--lucky-red); font-weight: bold; margin-bottom: 5px; }
+        #instruction { font-size: 1.2em; color: #666; margin-bottom: 10px; height: 1.5em; }
 
         #display-name { 
-            font-size: 7em; 
+            font-size: 5.5em; 
             font-weight: bold; 
-            margin: 40px 0; 
+            margin: 20px 0; 
             color: var(--impr-orange); 
-            text-shadow: 2px 2px 0px var(--gold), 4px 4px 15px rgba(0,0,0,0.2);
-            height: 180px; 
-            line-height: 180px; 
+            text-shadow: 2px 2px 0px var(--gold);
+            min-height: 120px;
+        }
+
+        /* 錢袋區域 */
+        .bag-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            perspective: 1000px;
+        }
+
+        .money-bag {
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+            display: none; /* 初始隱藏 */
+        }
+
+        .money-bag:hover { transform: scale(1.1) rotate(5deg); }
+        .money-bag.selected { transform: scale(1.2); filter: brightness(1.2); }
+
+        .bag-icon { font-size: 4rem; display: block; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2)); }
+        .bag-num { 
+            position: absolute; 
+            top: 55%; left: 50%; 
+            transform: translate(-50%, -50%); 
+            color: white; font-weight: bold; font-size: 1.2rem;
+            text-shadow: 1px 1px 2px black;
         }
 
         button { 
             background: var(--impr-orange); 
-            color: white; 
-            border: none; 
-            padding: 20px 100px; 
-            font-size: 2.2em; 
-            border-radius: 100px; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            font-weight: bold;
-            box-shadow: 0 10px 0 #c4561a;
+            color: white; border: none; 
+            padding: 15px 60px; font-size: 1.8em; 
+            border-radius: 50px; cursor: pointer; 
+            font-weight: bold; box-shadow: 0 8px 0 #c4561a;
         }
-        button:hover { transform: translateY(-5px); box-shadow: 0 15px 20px rgba(243, 112, 33, 0.4); }
-        button:active { transform: translateY(5px); box-shadow: none; }
-        button:disabled { background: #ccc; color: #888; box-shadow: none; }
+        button:active { transform: translateY(4px); box-shadow: none; }
+        button:disabled { background: #ccc; color: #888; box-shadow: none; cursor: not-allowed; }
         
         .history { 
-            margin-top: 50px; 
-            text-align: left; 
-            background: rgba(0,0,0,0.05); 
-            padding: 30px; 
-            border-radius: 20px; 
-            border: 1px dashed var(--gold);
+            margin-top: 30px; text-align: left; 
+            background: rgba(0,0,0,0.05); padding: 20px; 
+            border-radius: 20px; border: 1px dashed var(--gold);
+            max-height: 150px; overflow-y: auto;
         }
-        .history strong { color: var(--lucky-red); font-size: 1.2em; }
-        li { font-size: 1.4em; margin: 12px 0; color: #444; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-        .highlight { color: var(--lucky-red); font-weight: bold; }
+        .horse-deco { position: absolute; font-size: 3rem; top: 40%; opacity: 0.2; pointer-events: none; }
+        .horse-left { left: 20px; transform: scaleX(-1); }
+        .horse-right { right: 20px; }
     </style>
 </head>
 <body>
@@ -114,14 +108,23 @@
 
         <img src="https://raw.githubusercontent.com/imprjoseph/draw-lotto/main/IMPR%20LOGO.png" alt="IMPR Logo" class="logo">
         
-        <div id="prize-info">下一階段：開工獎 $500</div>
-        <div id="display-name">🧧 抽紅包 🧧</div>
+        <div id="prize-info">2026 馬到成功 抽紅包</div>
+        <div id="instruction">點擊下方按鈕選出幸運兒</div>
+        <div id="display-name">🧧</div>
+
+        <div class="bag-container" id="bag-container">
+            <div class="money-bag" onclick="selectBag(1)"><span class="bag-icon">💰</span><span class="bag-num">1</span></div>
+            <div class="money-bag" onclick="selectBag(2)"><span class="bag-icon">💰</span><span class="bag-num">2</span></div>
+            <div class="money-bag" onclick="selectBag(3)"><span class="bag-icon">💰</span><span class="bag-num">3</span></div>
+            <div class="money-bag" onclick="selectBag(4)"><span class="bag-icon">💰</span><span class="bag-num">4</span></div>
+            <div class="money-bag" onclick="selectBag(5)"><span class="bag-icon">💰</span><span class="bag-num">5</span></div>
+        </div>
         
-        <button id="draw-btn" onclick="runLotto()">抽出幸運兒</button>
+        <button id="main-btn" onclick="drawWorker()">抽出幸運兒</button>
 
         <div class="history">
-            <strong>✨ 中獎英雄榜：</strong>
-            <ul id="history-list"></ul>
+            <strong>✨ 中獎榮耀榜：</strong>
+            <ul id="history-list" style="list-style:none; padding:0;"></ul>
         </div>
     </div>
 
@@ -131,39 +134,24 @@
             { name: "開工獎 $500", count: 5, level: 1 },
             { name: "三獎 $600", count: 3, level: 1 },
             { name: "二獎 $800", count: 2, level: 2 },
-            { name: "頭獎 $1,000", count: 1, level: 3 }
+            { name: "頭獎 $1,100", count: 1, level: 3 }
         ];
 
         let currentTier = 0;
         let drawnInTier = 0;
+        let currentWinner = "";
+        let isWaitingForBag = false;
 
-        function triggerConfetti(level) {
-            if (level === 1) {
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#f37021', '#ffd700', '#ff0000'] });
-            } else if (level === 2) {
-                let end = Date.now() + 3000;
-                (function frame() {
-                    confetti({ particleCount: 7, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#f37021', '#ffd700'] });
-                    confetti({ particleCount: 7, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff0000', '#ffd700'] });
-                    if (Date.now() < end) requestAnimationFrame(frame);
-                }());
-            } else if (level === 3) {
-                let duration = 6 * 1000;
-                let animationEnd = Date.now() + duration;
-                let interval = setInterval(function() {
-                    let timeLeft = animationEnd - Date.now();
-                    if (timeLeft <= 0) return clearInterval(interval);
-                    confetti({ particleCount: 80, startVelocity: 30, spread: 360, origin: { x: Math.random(), y: Math.random() - 0.2 } });
-                }, 200);
-            }
-        }
-
-        function runLotto() {
+        function drawWorker() {
             if (staff.length === 0) return;
-            const btn = document.getElementById('draw-btn');
+            const btn = document.getElementById('main-btn');
             const display = document.getElementById('display-name');
+            const bags = document.querySelectorAll('.money-bag');
+            
             btn.disabled = true;
+            document.getElementById('instruction').innerText = "命運輪盤轉動中...";
 
+            // 隨機跳動名字
             let timer = setInterval(() => {
                 display.innerText = staff[Math.floor(Math.random() * staff.length)];
             }, 60);
@@ -171,30 +159,64 @@
             setTimeout(() => {
                 clearInterval(timer);
                 const winnerIndex = Math.floor(Math.random() * staff.length);
-                const winner = staff.splice(winnerIndex, 1)[0];
-                const prize = prizePool[currentTier];
+                currentWinner = staff.splice(winnerIndex, 1)[0];
+                display.innerText = currentWinner;
+                
+                // 顯示錢袋供選擇
+                document.getElementById('instruction').innerText = `請 ${currentWinner} 同學選一個錢袋開獎！`;
+                bags.forEach(bag => bag.style.display = 'block');
+                isWaitingForBag = true;
+            }, 1500);
+        }
 
-                display.innerText = winner;
-                triggerConfetti(prize.level);
+        function selectBag(num) {
+            if (!isWaitingForBag) return;
+            isWaitingForBag = false;
 
-                const li = document.createElement('li');
-                li.innerHTML = `<span class="highlight">${prize.name}</span> — ${winner}`;
-                document.getElementById('history-list').prepend(li);
+            const prize = prizePool[currentTier];
+            const bags = document.querySelectorAll('.money-bag');
+            const display = document.getElementById('display-name');
+            
+            // 隱藏錢袋，顯示中獎金額
+            bags.forEach(bag => bag.style.display = 'none');
+            display.innerHTML = `<span style="font-size:0.5em; color:#333;">恭喜抽中</span><br>${prize.name}`;
+            
+            triggerConfetti(prize.level);
 
-                drawnInTier++;
-                if (drawnInTier >= prize.count) {
-                    currentTier++;
-                    drawnInTier = 0;
-                }
+            const li = document.createElement('li');
+            li.innerHTML = `<span style="color:#b31217; font-weight:bold;">${prize.name}</span> — ${currentWinner} (選擇了 ${num} 號袋)`;
+            document.getElementById('history-list').prepend(li);
 
-                if (currentTier < prizePool.length) {
-                    document.getElementById('prize-info').innerText = `下一階段：${prizePool[currentTier].name}`;
-                    btn.disabled = false;
-                } else {
-                    document.getElementById('prize-info').innerText = "🎊 2026 馬到成功，開工大吉！";
-                    btn.innerText = "圓滿結束";
-                }
-            }, 2000);
+            drawnInTier++;
+            if (drawnInTier >= prize.count) {
+                currentTier++;
+                drawnInTier = 0;
+            }
+
+            if (currentTier < prizePool.length) {
+                document.getElementById('main-btn').disabled = false;
+                document.getElementById('instruction').innerText = "準備抽出下一位...";
+            } else {
+                document.getElementById('instruction').innerText = "🎊 2026 馬到成功，開工大吉！";
+                document.getElementById('main-btn').innerText = "圓滿結束";
+            }
+        }
+
+        function triggerConfetti(level) {
+            const colors = ['#f37021', '#ffd700', '#ff0000'];
+            if (level === 1) {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors });
+            } else if (level === 2) {
+                confetti({ particleCount: 300, spread: 100, origin: { y: 0.6 }, colors });
+            } else if (level === 3) {
+                let duration = 6 * 1000;
+                let end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
         }
     </script>
 </body>
